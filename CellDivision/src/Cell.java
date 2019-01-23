@@ -4,13 +4,12 @@ public class Cell implements Cloneable {
 	private int pos_x;
 	private int pos_y;
 	private boolean canMut;
+	private int probOfMut = 50;
 	
 	
 	public Cell() {
 		
-	
 		newPosition();
-		
 		
 	}
 	
@@ -22,6 +21,16 @@ public class Cell implements Cloneable {
 
 	}
 	
+
+	public int getProbOfMut() {
+		return probOfMut;
+	}
+
+
+	public void setProbOfMut(int probOfMut) {
+		this.probOfMut = probOfMut;
+	}
+
 
 	public boolean canMut() {
 		return canMut;
