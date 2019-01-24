@@ -44,21 +44,27 @@ public class Main {
 				System.out.printf(" y =  " +  listCell.get(i).getPos_y() + "\n");
 				System.out.printf("Can Mut : " + listCell.get(i).canMut() + "\n");
 					
-				//Check for a mitosis
-				try {
-					mitosis(listCell.get(i));
-					listCell.get(i).setCanMut(false);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+
 				
 				//Comparing the probability of the cell to do a mitosis with the random value
 				if(listCell.get(i).getProbOfMut() > result) {
 					
 					//Autozize the mutation
 					listCell.get(i).setCanMut(true);
+					
+					//Do mitosis
+					try {
+						mitosis(listCell.get(i));
+						listCell.get(i).setCanMut(false);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					break;
 				}
+				
+				
 
 			}
 			
@@ -143,10 +149,12 @@ public class Main {
 			newCell.setPos_x(cell.getPos_x()+newMappedX);
 			newCell.setPos_y(cell.getPos_y()+newMappedY);
 			newCell.setCanMut(false);
+			newCell.setAge(0);
 			
 			newCell2.setPos_x(cell.getPos_x()-newMappedX);
 			newCell2.setPos_y(cell.getPos_y()-newMappedY);
 			newCell2.setCanMut(false);
+			newCell2.setAge(0);
 			
 			//Add the child to the list
 			listCell.add(newCell);

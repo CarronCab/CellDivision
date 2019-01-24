@@ -5,8 +5,16 @@ public class Cell implements Cloneable {
 	private int pos_y;
 	private boolean canMut;
 	private int probOfMut = 50;
+	private int age = 0;
 	
 	
+	
+	public Cell(int age) {
+		super();
+		this.age = age;
+	}
+
+
 	public Cell() {
 		
 		newPosition();
@@ -21,7 +29,17 @@ public class Cell implements Cloneable {
 
 	}
 	
+	
+	
+	public int getAge() {
+		return age;
+	}
 
+
+	public void setAge(int age) {
+		this.age = age;
+	} 
+	
 	public int getProbOfMut() {
 		return probOfMut;
 	}
@@ -70,5 +88,8 @@ public class Cell implements Cloneable {
 	           e.printStackTrace(); 
 	       } 
         return obj; 
-       } 
+       }
+
+
+
 }
