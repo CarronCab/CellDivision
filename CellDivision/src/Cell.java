@@ -1,9 +1,9 @@
 public class Cell implements Cloneable {
 
-	private int pos_x;
-	private int pos_y;
+	private int pos_x = 10;
+	private int pos_y = 10;
 	private boolean canMut;
-	private int probOfMut = 1;
+	private int probOfMut = 50;
 	private int age = 0;
 	
 

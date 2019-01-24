@@ -2,12 +2,17 @@ import java.util.Random;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
+import javax.swing.JFrame;
+
+
 public class Main {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	
 	//List of cells
 	public static Vector<Cell> listCell = new Vector();
+	
+	
 	
 	public static void main(String[] args) throws CloneNotSupportedException {
 		
@@ -19,12 +24,10 @@ public class Main {
 		listCell.add(firstCell);
 		firstCell.setCanMut(false);
 		
-		/*
 		//Creation of the window
-		Window myWindow = new Window();
-		myWindow.setVisible(true);
-		myWindow.setTitle("Cell Division");
-		*/
+		Grid grid = new Grid();
+		grid.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		grid.setTitle("Cell Division");
 		
 		//Randomization of the mitosis
 		Random r = new Random();
@@ -33,7 +36,7 @@ public class Main {
 		int result;
 		
 		while (true) {
-			
+					
 			//Display the generation
 			System.out.printf("Generation " + generation + "\n");
 			
@@ -44,22 +47,21 @@ public class Main {
 				//Ask a random value between 0 and 100
 				result = r.nextInt(high-low) + low;
 				
-			
+				//Ask for mitosis
+				try {
+					mitosis(listCell.get(i));
+					listCell.get(i).setCanMut(false);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				//Comparing the probability of the cell to do a mitosis with the random value
 				if(listCell.get(i).getProbOfMut() > result)  {
 										
-					//Do mitosis
-					try {
-						mitosis(listCell.get(i));
-						listCell.get(i).setCanMut(false);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
+
 					//Autozize the mutation
 					listCell.get(i).setCanMut(true);
-					
 					
 				}
 				
@@ -96,7 +98,7 @@ public class Main {
 			generation++;
 		
 		}
-
+		
 	}
 
 	private static void mitosis(Cell cell) {
