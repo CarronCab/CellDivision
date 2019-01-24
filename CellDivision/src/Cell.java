@@ -1,19 +1,11 @@
-
 public class Cell implements Cloneable {
 
 	private int pos_x;
 	private int pos_y;
 	private boolean canMut;
-	private int probOfMut = 50;
+	private int probOfMut = 1;
 	private int age = 0;
 	
-	
-	
-	public Cell(int age) {
-		super();
-		this.age = age;
-	}
-
 
 	public Cell() {
 		
@@ -24,17 +16,13 @@ public class Cell implements Cloneable {
 
 	private void newPosition() {
 		
-		this.setPos_x(10);
-		this.setPos_y(10);
+		
 
 	}
-	
-	
 	
 	public int getAge() {
 		return age;
 	}
-
 
 	public void setAge(int age) {
 		this.age = age;
@@ -44,11 +32,9 @@ public class Cell implements Cloneable {
 		return probOfMut;
 	}
 
-
 	public void setProbOfMut(int probOfMut) {
 		this.probOfMut = probOfMut;
 	}
-
 
 	public boolean canMut() {
 		return canMut;
@@ -74,7 +60,6 @@ public class Cell implements Cloneable {
 		this.pos_y = pos_y;
 	}
 
-	
 	@Override
 	public Object clone() 
 	   { 
@@ -89,7 +74,5 @@ public class Cell implements Cloneable {
 	       } 
         return obj; 
        }
-
-
-
+	
 }

@@ -12,9 +12,6 @@ public class Window extends JFrame{
 	public Window() {
 		super();
 		WindowParameters();
-
-
-
 	}
 
 	private void WindowParameters() {

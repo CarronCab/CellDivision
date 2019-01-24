@@ -17,7 +17,14 @@ public class Main {
 		//Creation of the mother cell
 		Cell firstCell = new Cell();
 		listCell.add(firstCell);
-		firstCell.setCanMut(false);		
+		firstCell.setCanMut(false);
+		
+		/*
+		//Creation of the window
+		Window myWindow = new Window();
+		myWindow.setVisible(true);
+		myWindow.setTitle("Cell Division");
+		*/
 		
 		//Randomization of the mitosis
 		Random r = new Random();
@@ -36,22 +43,11 @@ public class Main {
 				
 				//Ask a random value between 0 and 100
 				result = r.nextInt(high-low) + low;
-				System.out.println(result);
 				
-				//Display some characteristic of the cell
-				System.out.printf("cell : " + i + "\n");
-				System.out.printf(" x =  " +  listCell.get(i).getPos_x() + "\n");
-				System.out.printf(" y =  " +  listCell.get(i).getPos_y() + "\n");
-				System.out.printf("Can Mut : " + listCell.get(i).canMut() + "\n");
-					
-
-				
+			
 				//Comparing the probability of the cell to do a mitosis with the random value
-				if(listCell.get(i).getProbOfMut() > result) {
-					
-					//Autozize the mutation
-					listCell.get(i).setCanMut(true);
-					
+				if(listCell.get(i).getProbOfMut() > result)  {
+										
 					//Do mitosis
 					try {
 						mitosis(listCell.get(i));
@@ -61,11 +57,28 @@ public class Main {
 						e.printStackTrace();
 					}
 					
+					//Autozize the mutation
+					listCell.get(i).setCanMut(true);
+					
+					
+				}
+				
+				//Cell die after 10 generation
+				if(listCell.get(i).getAge() > 10) {
+					listCell.remove(listCell.get(i));
 					break;
 				}
 				
-				
+				//Display some characteristic of the cell
+				System.out.println(result);
+				System.out.printf("cell : " + i + "\n");
+				System.out.printf(" x =  " +  listCell.get(i).getPos_x() + "\n");
+				System.out.printf(" y =  " +  listCell.get(i).getPos_y() + "\n");
+				System.out.printf("Can Mut : " + listCell.get(i).canMut() + "\n");
+				System.out.printf("Age : " + listCell.get(i).getAge() +"\n");
 
+				listCell.get(i).setAge(listCell.get(i).getAge() +1);
+				
 			}
 			
 			//Display the population size at this generation
@@ -83,26 +96,6 @@ public class Main {
 			generation++;
 		
 		}
-
-		
-		
-		/*
-		Cell firstCell = new Cell();
-		Cell secondCell = new Cell();
-
-		listCell.add(firstCell);
-		listCell.add(secondCell);
-
-		listCell.get(0).getX();
-		
-		System.out.println(firstCell);
-		System.out.println(secondCell);
-		System.out.println(listCell);
-		
-		Window myWindow = new Window();
-		myWindow.setVisible(true);
-		myWindow.setTitle("Cell Division");
-		*/
 
 	}
 
