@@ -25,11 +25,18 @@ public class Main {
 		firstCell.setCanMut(false);
 		
 		//Creation of the window
-		Grid grid = new Grid();
-		grid.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		grid.setTitle("Cell Division");
+		 Grid grid = new Grid();
+         JFrame window = new JFrame();
+         window.setSize(840, 560);
+         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+         window.add(grid);
+         window.setVisible(true);
+         
+         //Display the first cell
+         grid.fillCell(firstCell.getPos_x(), firstCell.getPos_y());
+         
 		
-		//Randomization of the mitosis
+        //Randomization of the mitosis
 		Random r = new Random();
 		int low = 0;
 		int high = 100;
@@ -47,9 +54,19 @@ public class Main {
 				//Ask a random value between 0 and 100
 				result = r.nextInt(high-low) + low;
 				
+				//Cell die after 10 generation
+				if(listCell.get(i).getAge() > 3) {
+					
+					grid.deadCell(listCell.get(i).getPos_x(),listCell.get(i).getPos_y());
+					listCell.remove(i);
+					
+					
+					break;
+				}
+				
 				//Ask for mitosis
 				try {
-					mitosis(listCell.get(i));
+					mitosis(listCell.get(i), grid,i);
 					listCell.get(i).setCanMut(false);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -65,12 +82,6 @@ public class Main {
 					
 				}
 				
-				//Cell die after 10 generation
-				if(listCell.get(i).getAge() > 10) {
-					listCell.remove(listCell.get(i));
-					break;
-				}
-				
 				//Display some characteristic of the cell
 				System.out.println(result);
 				System.out.printf("cell : " + i + "\n");
@@ -81,6 +92,9 @@ public class Main {
 
 				listCell.get(i).setAge(listCell.get(i).getAge() +1);
 				
+				
+				
+				
 			}
 			
 			//Display the population size at this generation
@@ -88,7 +102,7 @@ public class Main {
 			
 			//Wait some seconds
 			try {
-				TimeUnit.SECONDS.sleep(2);
+				TimeUnit.MILLISECONDS.sleep(0);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -101,7 +115,7 @@ public class Main {
 		
 	}
 
-	private static void mitosis(Cell cell) {
+	private static void mitosis(Cell cell, Grid grid, int i) {
 		
 		//Randomization of the cells spawns
 		Random x = new Random();
@@ -113,10 +127,13 @@ public class Main {
 		int newMappedX;
 		int newMappedY;
 		
+		boolean collision;
+		
 		//Do the mitosis if the cell can mutate
-		if(cell.canMut() == true) {
+		if(cell.canMut() == true && listCell.size() < 100) {
 			
 			//Remove the current cell from the list
+			grid.removeCell(cell.getPos_x(),cell.getPos_y(), i);
 			listCell.remove(cell);
 			
 			//Disable the mutation so its child can not mutate yet
@@ -130,17 +147,18 @@ public class Main {
 			newMappedX = map(newX, l, h, -1, 1);
 			newMappedY = map(newY, l, h, -1, 1);
 			
+			/*
 			//Avoid creating a cell in at the same position as its mother
 			if((newMappedX == 0) && (newMappedY == 0)) {
 				newMappedY++;
 				newMappedX++;
 			}
-			
+			*/
 			//Clone the current cell to two new child
 			Cell newCell = (Cell) cell.clone();
 			Cell newCell2 = (Cell) cell.clone();
 			
-			//Set the characteristic of the new cells 
+			//Set the characteristic of the new cells
 			newCell.setPos_x(cell.getPos_x()+newMappedX);
 			newCell.setPos_y(cell.getPos_y()+newMappedY);
 			newCell.setCanMut(false);
@@ -151,15 +169,65 @@ public class Main {
 			newCell2.setCanMut(false);
 			newCell2.setAge(0);
 			
-			//Add the child to the list
-			listCell.add(newCell);
-
-			listCell.add(newCell2);
+			//Collision newCell 1
+			collision = checkCollision(newCell);
 			
+			if(collision) {
+				
+				//Draw the new Cell
+				grid.fillCell(newCell.getPos_x(), newCell.getPos_y());
+				
+				//Add the child to the list
+				listCell.add(newCell);
+				
+			}
+			
+			//Collision newCell 2
+			collision = checkCollision(newCell2);
+			
+			if(collision == true) {
+				
+				//Draw the new Cell
+				grid.fillCell(newCell2.getPos_x(), newCell2.getPos_y());
+				
+				//Add the child to the list
+				listCell.add(newCell2);
+			}
+			
+			
+
+			//Clean the garbage
 			System.gc();
 		}
 	}
 	
+	private static boolean checkCollision(Cell newCell) {
+	
+		for( Cell cell: listCell) {
+			
+			if( 	
+					(newCell.getPos_x() == cell.getPos_x() + 1 && newCell.getPos_y() == cell.getPos_y() + 1)
+				||  (newCell.getPos_x() == cell.getPos_x() + 1 && newCell.getPos_y() == cell.getPos_y() - 1)
+				||  (newCell.getPos_x() == cell.getPos_x() - 1 && newCell.getPos_y() == cell.getPos_y() + 1)
+				||  (newCell.getPos_x() == cell.getPos_x() - 1 && newCell.getPos_y() == cell.getPos_y() - 1)
+				||  (newCell.getPos_x() == cell.getPos_x() && newCell.getPos_y() == cell.getPos_y() + 1)
+				||  (newCell.getPos_x() == cell.getPos_x() && newCell.getPos_y() == cell.getPos_y() - 1)
+				||  (newCell.getPos_x() == cell.getPos_x() + 1 && newCell.getPos_y() == cell.getPos_y())
+				||  (newCell.getPos_x() == cell.getPos_x() - 1 && newCell.getPos_y() == cell.getPos_y())
+				||  (newCell.getPos_x() == cell.getPos_x() && newCell.getPos_y() == cell.getPos_y())
+				||  (newCell.getPos_x() < 0 )
+				||  (newCell.getPos_y() < 0 )
+				||  (newCell.getPos_x() > 79 )
+				||  (newCell.getPos_y() > 49 ) 
+			
+			){
+				return false;
+			}
+		}
+		
+		return true;
+	}
+
 	//Change the range of a value
 	private static int map(int x, int in_min, int in_max, int out_min, int out_max)
 	{

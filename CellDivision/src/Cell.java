@@ -1,25 +1,18 @@
 public class Cell implements Cloneable {
 
-	private int pos_x = 10;
-	private int pos_y = 10;
+	private int pos_x = 50;
+	private int pos_y = 25;
 	private boolean canMut;
-	private int probOfMut = 50;
+	private int probOfMut = 100;
 	private int age = 0;
 	
 
 	public Cell() {
 		
-		newPosition();
 		
 	}
 	
 
-	private void newPosition() {
-		
-		
-
-	}
-	
 	public int getAge() {
 		return age;
 	}
