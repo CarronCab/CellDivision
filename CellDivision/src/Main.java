@@ -2,8 +2,6 @@ import java.util.Random;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.JFrame;
-
 
 public class Main {
 
@@ -11,7 +9,7 @@ public class Main {
 	
 	//List of cells
 	public static Vector<Cell> listCell = new Vector();
-	
+	public static int speed = 50;
 	
 	
 	public static void main(String[] args) throws CloneNotSupportedException {
@@ -25,17 +23,14 @@ public class Main {
 		firstCell.setCanMut(false);
 		
 		//Creation of the window
-		 Grid grid = new Grid();
-         JFrame window = new JFrame();
-         window.setSize(840, 560);
-         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-         window.add(grid);
-         window.setVisible(true);
-         
+		Grid grid = new Grid();
+        Window window = new Window();
+        window.add(grid);
+        
          //Display the first cell
          grid.fillCell(firstCell.getPos_x(), firstCell.getPos_y());
+    
          
-		
         //Randomization of the mitosis
 		Random r = new Random();
 		int low = 0;
@@ -54,46 +49,39 @@ public class Main {
 				//Ask a random value between 0 and 100
 				result = r.nextInt(high-low) + low;
 				
-				//Cell die after 10 generation
-				if(listCell.get(i).getAge() > 3) {
+				//Cell die after 3 generation
+				if(listCell.get(i).ripCell()) {
 					
+					//Display a dead cell (black square) and remove the cell form the list
 					grid.deadCell(listCell.get(i).getPos_x(),listCell.get(i).getPos_y());
-					listCell.remove(i);
-					
-					
+					listCell.remove(listCell.get(i));
+				
 					break;
 				}
 				
 				//Ask for mitosis
 				try {
+					
 					mitosis(listCell.get(i), grid,i);
-					listCell.get(i).setCanMut(false);
+					
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 				}
 				
 				//Comparing the probability of the cell to do a mitosis with the random value
 				if(listCell.get(i).getProbOfMut() > result)  {
 										
-
 					//Autozize the mutation
 					listCell.get(i).setCanMut(true);
 					
 				}
-				
+	
 				//Display some characteristic of the cell
-				System.out.println(result);
-				System.out.printf("cell : " + i + "\n");
-				System.out.printf(" x =  " +  listCell.get(i).getPos_x() + "\n");
-				System.out.printf(" y =  " +  listCell.get(i).getPos_y() + "\n");
-				System.out.printf("Can Mut : " + listCell.get(i).canMut() + "\n");
-				System.out.printf("Age : " + listCell.get(i).getAge() +"\n");
-
-				listCell.get(i).setAge(listCell.get(i).getAge() +1);
+				listCell.get(i).Display(i);
 				
-				
-				
+				//Age of the cell plus one
+				listCell.get(i).happyBirthday();
 				
 			}
 			
@@ -102,9 +90,12 @@ public class Main {
 			
 			//Wait some seconds
 			try {
-				TimeUnit.MILLISECONDS.sleep(0);
+				
+				TimeUnit.MILLISECONDS.sleep(speed);
+				
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+
+				
 				e.printStackTrace();
 			}
 			
@@ -128,9 +119,10 @@ public class Main {
 		int newMappedY;
 		
 		boolean collision;
+		boolean flag1, flag2 = false;
 		
 		//Do the mitosis if the cell can mutate
-		if(cell.canMut() == true && listCell.size() < 100) {
+		if(cell.canMut() == true && listCell.size() < 100 ) {
 			
 			//Remove the current cell from the list
 			grid.removeCell(cell.getPos_x(),cell.getPos_y(), i);
@@ -180,7 +172,9 @@ public class Main {
 				//Add the child to the list
 				listCell.add(newCell);
 				
-			}
+				flag1 = false;
+				
+			} else flag1 = true; 
 			
 			//Collision newCell 2
 			collision = checkCollision(newCell2);
@@ -192,29 +186,35 @@ public class Main {
 				
 				//Add the child to the list
 				listCell.add(newCell2);
-			}
+				
+				flag1 = false;
+				
+			} else flag2 = true;
 			
 			
-
+			//If none of the child is born then we add the mother cell again
+			if(flag1 && flag2) listCell.add(i, cell);
+			
 			//Clean the garbage
+			cell = null;
 			System.gc();
 		}
 	}
 	
 	private static boolean checkCollision(Cell newCell) {
 	
-		for( Cell cell: listCell) {
-			
+		for( int i = 0 ; i < listCell.size() ; i++) {
+						
 			if( 	
-					(newCell.getPos_x() == cell.getPos_x() + 1 && newCell.getPos_y() == cell.getPos_y() + 1)
-				||  (newCell.getPos_x() == cell.getPos_x() + 1 && newCell.getPos_y() == cell.getPos_y() - 1)
-				||  (newCell.getPos_x() == cell.getPos_x() - 1 && newCell.getPos_y() == cell.getPos_y() + 1)
-				||  (newCell.getPos_x() == cell.getPos_x() - 1 && newCell.getPos_y() == cell.getPos_y() - 1)
-				||  (newCell.getPos_x() == cell.getPos_x() && newCell.getPos_y() == cell.getPos_y() + 1)
-				||  (newCell.getPos_x() == cell.getPos_x() && newCell.getPos_y() == cell.getPos_y() - 1)
-				||  (newCell.getPos_x() == cell.getPos_x() + 1 && newCell.getPos_y() == cell.getPos_y())
-				||  (newCell.getPos_x() == cell.getPos_x() - 1 && newCell.getPos_y() == cell.getPos_y())
-				||  (newCell.getPos_x() == cell.getPos_x() && newCell.getPos_y() == cell.getPos_y())
+					(newCell.getPos_x() == listCell.get(i).getPos_x() + 1 && newCell.getPos_y() == listCell.get(i).getPos_y() + 1)
+				||  (newCell.getPos_x() == listCell.get(i).getPos_x() + 1 && newCell.getPos_y() == listCell.get(i).getPos_y() - 1)
+				||  (newCell.getPos_x() == listCell.get(i).getPos_x() - 1 && newCell.getPos_y() == listCell.get(i).getPos_y() + 1)
+				||  (newCell.getPos_x() == listCell.get(i).getPos_x() - 1 && newCell.getPos_y() == listCell.get(i).getPos_y() - 1)
+				||  (newCell.getPos_x() == listCell.get(i).getPos_x() && newCell.getPos_y() == listCell.get(i).getPos_y() + 1)
+				||  (newCell.getPos_x() == listCell.get(i).getPos_x() && newCell.getPos_y() == listCell.get(i).getPos_y() - 1)
+				||  (newCell.getPos_x() == listCell.get(i).getPos_x() + 1 && newCell.getPos_y() == listCell.get(i).getPos_y())
+				||  (newCell.getPos_x() == listCell.get(i).getPos_x() - 1 && newCell.getPos_y() == listCell.get(i).getPos_y())
+				||  (newCell.getPos_x() == listCell.get(i).getPos_x() && newCell.getPos_y() == listCell.get(i).getPos_y())
 				||  (newCell.getPos_x() < 0 )
 				||  (newCell.getPos_y() < 0 )
 				||  (newCell.getPos_x() > 79 )

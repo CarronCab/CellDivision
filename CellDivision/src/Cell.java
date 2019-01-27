@@ -12,6 +12,26 @@ public class Cell implements Cloneable {
 		
 	}
 	
+	public void Display(int i) {
+		
+		System.out.printf("cell : " + i + "\n");
+		System.out.printf(" x =  " +  pos_x + "\n");
+		System.out.printf(" y =  " +  pos_y + "\n");
+		System.out.printf("Can Mut : " + canMut + "\n");
+		System.out.printf("Age : " + age +"\n");
+		
+	}
+	
+	public void happyBirthday() {
+		age++;
+	}
+	
+	public boolean ripCell() {
+		if(age > 3) return true;
+		
+		else return false;
+	
+	}
 
 	public int getAge() {
 		return age;
