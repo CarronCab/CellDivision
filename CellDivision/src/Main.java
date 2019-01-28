@@ -42,46 +42,49 @@ public class Main {
 			//Display the generation
 			System.out.printf("Generation " + generation + "\n");
 			
-
-			//Check every cell on the list
-			for(int i = 0 ; i < listCell.size() ; i++) {
+			if(listCell.size() > 0) {
 				
-				//Ask a random value between 0 and 100
-				result = r.nextInt(high-low) + low;
-				
-				//Cell die after 3 generation
-				if(listCell.get(i).ripCell()) {
+				//Check every cell on the list
+				for(int i = 0 ; i < listCell.size() ; i++) {
 					
-					//Display a dead cell (black square) and remove the cell form the list
-					grid.deadCell(listCell.get(i).getPos_x(),listCell.get(i).getPos_y());
-					listCell.remove(listCell.get(i));
-				
-					break;
-				}
-				
-				//Ask for mitosis
-				try {
+					//Ask a random value between 0 and 100
+					result = r.nextInt(high-low) + low;
 					
-					mitosis(listCell.get(i), grid,i);
+					//Cell die after 3 generation
+					if(listCell.get(i).ripCell()) {
+						
+						//Display a dead cell (black square) and remove the cell form the list
+						grid.deadCell(listCell.get(i).getPos_x(),listCell.get(i).getPos_y());
+						listCell.remove(listCell.get(i));
 					
-				} catch (Exception e) {
-					
-					e.printStackTrace();
-				}
-				
-				//Comparing the probability of the cell to do a mitosis with the random value
-				if(listCell.get(i).getProbOfMut() > result)  {
-										
-					//Autozize the mutation
-					listCell.get(i).setCanMut(true);
-					
-				}
+					} else {
+						
+						//Ask for mitosis
+						try {
+							
+							mitosis(listCell.get(i), grid,i);
+							
+						} catch (Exception e) {
+							
+							e.printStackTrace();
+						}
+						
+						//Comparing the probability of the cell to do a mitosis with the random value
+						if(listCell.get(i).getProbOfMut() > result)  {
+												
+							//Autozize the mutation
+							listCell.get(i).setCanMut(true);
+							
+						}
+			
+						//Display some characteristic of the cell
+						listCell.get(i).Display(i);
+						
+						//Age of the cell plus one
+						listCell.get(i).happyBirthday();
+					}
 	
-				//Display some characteristic of the cell
-				listCell.get(i).Display(i);
-				
-				//Age of the cell plus one
-				listCell.get(i).happyBirthday();
+				}
 				
 			}
 			
@@ -118,15 +121,14 @@ public class Main {
 		int newMappedX;
 		int newMappedY;
 		
-		boolean collision;
-		boolean flag1, flag2 = false;
+		boolean collision1, collision2;
 		
 		//Do the mitosis if the cell can mutate
-		if(cell.canMut() == true && listCell.size() < 100 ) {
+		if(cell.canMut() == true ) {
 			
 			//Remove the current cell from the list
 			grid.removeCell(cell.getPos_x(),cell.getPos_y(), i);
-			listCell.remove(cell);
+			listCell.remove(i);
 			
 			//Disable the mutation so its child can not mutate yet
 			cell.setCanMut(false);
@@ -139,13 +141,6 @@ public class Main {
 			newMappedX = map(newX, l, h, -1, 1);
 			newMappedY = map(newY, l, h, -1, 1);
 			
-			/*
-			//Avoid creating a cell in at the same position as its mother
-			if((newMappedX == 0) && (newMappedY == 0)) {
-				newMappedY++;
-				newMappedX++;
-			}
-			*/
 			//Clone the current cell to two new child
 			Cell newCell = (Cell) cell.clone();
 			Cell newCell2 = (Cell) cell.clone();
@@ -162,24 +157,24 @@ public class Main {
 			newCell2.setAge(0);
 			
 			//Collision newCell 1
-			collision = checkCollision(newCell);
+			collision1 = checkCollision(newCell);
 			
-			if(collision) {
+			//Collision newCell 2
+			collision2 = checkCollision(newCell2);
+			
+			if(collision1) {
 				
 				//Draw the new Cell
 				grid.fillCell(newCell.getPos_x(), newCell.getPos_y());
 				
 				//Add the child to the list
-				listCell.add(newCell);
+				listCell.add(newCell);			
 				
-				flag1 = false;
-				
-			} else flag1 = true; 
+			}
 			
-			//Collision newCell 2
-			collision = checkCollision(newCell2);
+
 			
-			if(collision == true) {
+			if(collision2 == true) {
 				
 				//Draw the new Cell
 				grid.fillCell(newCell2.getPos_x(), newCell2.getPos_y());
@@ -187,14 +182,8 @@ public class Main {
 				//Add the child to the list
 				listCell.add(newCell2);
 				
-				flag1 = false;
-				
-			} else flag2 = true;
-			
-			
-			//If none of the child is born then we add the mother cell again
-			if(flag1 && flag2) listCell.add(i, cell);
-			
+			}
+
 			//Clean the garbage
 			cell = null;
 			System.gc();
@@ -223,6 +212,7 @@ public class Main {
 			){
 				return false;
 			}
+			
 		}
 		
 		return true;

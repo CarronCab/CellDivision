@@ -6,8 +6,8 @@ import javax.swing.JFrame;
 public class Window extends JFrame{
 
 	WindowContent panel;
-	public static final int WIDTH = 840;
-	public static final int HEIGHT = 560;
+	public static final int WIDTH = 840; //840
+	public static final int HEIGHT = 800; //560
 
 	public Window() {
 		super();
