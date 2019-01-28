@@ -7,7 +7,8 @@ public class Window extends JFrame{
 
 	WindowContent panel;
 	public static final int WIDTH = 840; //840
-	public static final int HEIGHT = 690; //560
+	public static final int HEIGHT = 700; //560
+	
 
 	public Window() {
 		super();

@@ -6,6 +6,7 @@ public class Cell implements Cloneable {
 	private int probOfMut = 100;
 	private int age = 0;
 	
+	
 
 	public Cell() {
 		

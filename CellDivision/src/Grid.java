@@ -16,6 +16,7 @@ public class Grid extends JPanel {
         fillCells = new ArrayList<>(25);
         deleteCells = new ArrayList<>(25);
         
+        
     }
 
     @Override
