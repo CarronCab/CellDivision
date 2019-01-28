@@ -1,6 +1,8 @@
 
 import javax.swing.JFrame;
 
+
+
 @SuppressWarnings("serial") //Ignore this warning : "The serializable class Window does not declare a static final serialVersionUID field of type long"
 
 public class Window extends JFrame{

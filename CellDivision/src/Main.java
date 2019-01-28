@@ -14,6 +14,10 @@ import javax.swing.JSlider;
 import javax.swing.JTextArea;
 
 
+
+
+
+
 public class Main {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
