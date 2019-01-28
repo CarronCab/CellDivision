@@ -1,7 +1,17 @@
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Hashtable;
 import java.util.Random;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.JTextArea;
 
 public class Main {
 
@@ -9,9 +19,18 @@ public class Main {
 	
 	//List of cells
 	public static Vector<Cell> listCell = new Vector();
-	public static int speed = 50;
 	
+	//Speed parameters
+	static final int S_MIN = 50;
+	static final int S_MAX = 2000;
+	static final int S_INIT = 1500;
 	
+	//Temperature parameters
+	static final int T_MIN = -50;
+	static final int T_MAX = 100;
+	static final int T_INIT = 37;
+	
+	@SuppressWarnings({ "rawtypes", "unchecked", "deprecation" })
 	public static void main(String[] args) throws CloneNotSupportedException {
 		
 		//Generation of the cell population set to 0
@@ -23,15 +42,65 @@ public class Main {
 		firstCell.setCanMut(false);
 		
 		//Creation of the window
+		JSlider speedSlider = new JSlider(JSlider.HORIZONTAL,
+                S_MIN, S_MAX, S_INIT);
+		JSlider temperatureSlider = new JSlider(JSlider.HORIZONTAL,
+                T_MIN, T_MAX, T_INIT);
+		JTextArea sizeOfTheList = new JTextArea();
+		JButton cleanButton = new JButton();
 		Grid grid = new Grid();
+		JPanel panel = new JPanel();
         Window window = new Window();
+       
+        GridLayout experimentLayout = new GridLayout(0,3, 10, 10);
         
-        window.add(grid);
+        panel.setLayout(experimentLayout);
+        window.setLayout(new BorderLayout(10,10));
         
-         //Display the first cell
-         grid.fillCell(firstCell.getPos_x(), firstCell.getPos_y());
+        cleanButton.setText("Exit");
+        
+        sizeOfTheList.setEditable(true);
+        sizeOfTheList.setText("size :" );
+        sizeOfTheList.setBackground(null);
+        
+      //Turn on labels at major tick marks.
+        speedSlider.setMajorTickSpacing(10);
+        speedSlider.setMinorTickSpacing(1);
+        speedSlider.setPaintTicks(true);
+        speedSlider.setPaintLabels(true);
+        
+      //Create the label table
+        Hashtable labelTable = new Hashtable();
+        labelTable.put( new Integer( 0 ), new JLabel("Stop") );
+        labelTable.put( new Integer( S_MAX/10 ), new JLabel("Slow") );
+        labelTable.put( new Integer( S_MAX ), new JLabel("Fast") );
+        speedSlider.setLabelTable( labelTable );
+        
+        //Turn on labels at major tick marks.
+        temperatureSlider.setMajorTickSpacing(10);
+        temperatureSlider.setMinorTickSpacing(1);
+        temperatureSlider.setPaintTicks(true);
+        temperatureSlider.setPaintLabels(true);
+        
+      //Create the label table
+        Hashtable labelTable2 = new Hashtable();
+        labelTable2.put( new Integer( 0 ), new JLabel("0") );
+        labelTable2.put( new Integer( -45 ), new JLabel("-50") );
+        labelTable2.put( new Integer( T_MAX - 5 ), new JLabel("100") );
+        temperatureSlider.setLabelTable( labelTable2 );
     
-         
+        window.add(grid,BorderLayout.CENTER);
+        window.add(panel, BorderLayout.PAGE_END);  
+        
+        panel.add(temperatureSlider);
+        panel.add(speedSlider);
+        panel.add(cleanButton);
+        panel.add(sizeOfTheList);
+       
+        
+        //Display the first cell
+        grid.fillCell(firstCell.getPos_x(), firstCell.getPos_y());
+    
         //Randomization of the mitosis
 		Random r = new Random();
 		int low = 0;
@@ -39,9 +108,18 @@ public class Main {
 		int result;
 		
 		while (true) {
+			
+			cleanButton.addActionListener(new ActionListener(){  
+				    public void actionPerformed(ActionEvent e){  
+				           
+				            System.exit(0);
+				            
+				    }  
+				    });  
 					
 			//Display the generation
 			System.out.printf("Generation " + generation + "\n");
+			System.out.print(temperatureSlider.getValue());
 			
 			if(listCell.size() > 0) {
 				
@@ -79,7 +157,7 @@ public class Main {
 						}
 			
 						//Display some characteristic of the cell
-						listCell.get(i).Display(i);
+						//listCell.get(i).Display(i);
 						
 						//Age of the cell plus one
 						listCell.get(i).happyBirthday();
@@ -91,11 +169,12 @@ public class Main {
 			
 			//Display the population size at this generation
 			System.out.printf("size = %d\n\n" , listCell.size());
+			sizeOfTheList.setText("size : " + listCell.size());
 			
 			//Wait some seconds
 			try {
 				
-				TimeUnit.MILLISECONDS.sleep(speed);
+				TimeUnit.MILLISECONDS.sleep(2000 - speedSlider.getValue());
 				
 			} catch (InterruptedException e) {
 
@@ -221,5 +300,9 @@ public class Main {
 	private static int map(int x, int in_min, int in_max, int out_min, int out_max)
 	{
 	  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+	}
+	
+	public void actionPerformed(ActionEvent e) {
+		
 	}
 }
