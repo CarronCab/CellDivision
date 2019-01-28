@@ -25,6 +25,7 @@ public class Main {
 		//Creation of the window
 		Grid grid = new Grid();
         Window window = new Window();
+        
         window.add(grid);
         
          //Display the first cell
@@ -171,8 +172,6 @@ public class Main {
 				listCell.add(newCell);			
 				
 			}
-			
-
 			
 			if(collision2 == true) {
 				
