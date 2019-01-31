@@ -3,18 +3,8 @@ public class Cell implements Cloneable {
 	private int pos_x = 50;
 	private int pos_y = 25;
 	private boolean canMut = false;
-	private int probOfMut = 100;
+	private int probOfMut = 50;
 	private int age = 0;
-	
-	
-	
-	
-	
-
-	public Cell() {
-		
-		
-	}
 	
 	public void Display(int i) {
 		
@@ -23,6 +13,7 @@ public class Cell implements Cloneable {
 		System.out.printf(" y =  " +  pos_y + "\n");
 		System.out.printf("Can Mut : " + canMut + "\n");
 		System.out.printf("Age : " + age +"\n");
+		System.out.printf("Prob : " + probOfMut +"\n");
 		
 	}
 	
@@ -31,7 +22,10 @@ public class Cell implements Cloneable {
 	}
 	
 	public boolean ripCell() {
-		if(age > 3) return true;
+		if(age > 3) {
+			this.canMut = false;
+			return true;
+		}
 		
 		else return false;
 	

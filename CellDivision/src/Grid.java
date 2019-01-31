@@ -3,10 +3,9 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JPanel;
-
-
 
 @SuppressWarnings("serial")
 public class Grid extends JPanel {
@@ -15,8 +14,8 @@ public class Grid extends JPanel {
     private List<Point> deleteCells;
 
     public Grid() {
-        fillCells = new ArrayList<>(25);
-        deleteCells = new ArrayList<>(25);
+        fillCells = new ArrayList<>(1);
+        deleteCells = new ArrayList<>(1);
         
         
     }
@@ -25,9 +24,8 @@ public class Grid extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         
-        if(fillCells.size() >= 0) {
+        if(fillCells.size() >= 0 && Main.running == true) {
             for (int i = 0 ; i < fillCells.size() ; i ++) {
-            	
             	
                 int cellX = 10 + (fillCells.get(i).x * 10);
                 int cellY = 10 + (fillCells.get(i).y * 10);
@@ -38,7 +36,7 @@ public class Grid extends JPanel {
        
         }
         
-        if(deleteCells.size() >= 0) {
+       if(deleteCells.size() >= 0 && Main.running == true) {
             for (int i = 0 ; i < deleteCells.size() ; i ++) {
             	
                 int cellX = 10 + (deleteCells.get(i).x * 10);
@@ -50,11 +48,48 @@ public class Grid extends JPanel {
             //After 20 dead cell, we clean the first body so the grid cell becomes spawnable again
             if(deleteCells.size() > 50) {
             	
-            	deleteCells.remove(0);
+            	//deleteCells.remove(0);
             	
             }
            
-        }
+       }
+       
+       if(Main.running == false) {
+    	   
+    	   try {
+					
+        	   TimeUnit.MILLISECONDS.sleep(50);
+				
+				} catch (InterruptedException e) {
+
+				
+					e.printStackTrace();
+				}
+    	   
+    	   if(fillCells.size() >= 0) {
+               for (int i = 0 ; i < fillCells.size() ; i ++) {
+               	
+               	
+                   int cellX = 10 + (fillCells.get(i).x * 10);
+                   int cellY = 10 + (fillCells.get(i).y * 10);
+                   g.setColor(Color.BLACK);
+                   g.fillRect(cellX, cellY, 10, 10);
+                 
+                   
+               }
+               
+               if(deleteCells.size() >= 0) {
+                   for (int i = 0 ; i < deleteCells.size() ; i ++) {
+                   	
+                       int cellX = 10 + (deleteCells.get(i).x * 10);
+                       int cellY = 10 + (deleteCells.get(i).y * 10);
+                       g.setColor(Color.BLACK);
+                       g.fillRect(cellX, cellY, 10, 10);
+                   }
+               }
+    	   }
+       }
+    	   
 
         
         g.setColor(Color.BLACK);
@@ -70,20 +105,23 @@ public class Grid extends JPanel {
     }
 
     public void fillCell(int x, int y) {
-        fillCells.add(new Point(x, y));
+        fillCells.add( new Point(x, y));
         repaint();
     }
     
-    public void removeCell(int x, int y, int i) {
+    public void removeCell(int i) {
     	fillCells.remove(i);
         repaint();
     	
     }
     
     public void deadCell(int x, int y) {
+    	
     	deleteCells.add(new Point(x, y));
+    	//fillCells.remove(i);
         repaint();
     	
     }
+    
     
 }
